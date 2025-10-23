@@ -1,3 +1,6 @@
 aiogram
 SQLAlchemy
-dotenv
+aiosqlite
+python-dotenv
+qrcode
+pillow

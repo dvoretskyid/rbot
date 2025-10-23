@@ -21,6 +21,7 @@ async def start_command(message: Message, state: FSMContext):
 
 @router.message(Command("menu"))
 async def show_menu(message: Message, state: FSMContext):
+    await delete_messages(message, state, "menu_message_id")
     await state.clear()
     msg = await message.answer(text=MENU_TEXT, reply_markup=menu)
     await state.update_data(menu_message_id=msg.message_id)
@@ -28,7 +29,8 @@ async def show_menu(message: Message, state: FSMContext):
 
 @router.callback_query(F.data == "to_menu")
 async def to_menu_callback(query: CallbackQuery, state: FSMContext):
-    await delete_messages(query.message, state, "last_question_id", "reminder_message_id")
+    await delete_messages(query.message, state, "last_question_id", "reminder_message_id", "menu_message_id")
+    await state.clear()
     msg = await query.message.answer(text=MENU_TEXT, reply_markup=menu)
     await state.update_data(menu_message_id=msg.message_id)
-    
+    await query.answer()

@@ -7,6 +7,7 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 from aiohttp import web
 from configs.bot import BOT_TOKEN, BASE_URL, HOST, PORT
 from routers import start, popup
+from database.models import init_db
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher(bot=bot)
@@ -24,6 +25,7 @@ async def set_commands() -> None:
 
 
 async def on_startup() -> None:
+    await init_db()  # Ініціалізуємо базу даних
     await set_commands()
     await bot.set_webhook(f"{BASE_URL}/{BOT_TOKEN}")
 
