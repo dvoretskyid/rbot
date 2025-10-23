@@ -33,3 +33,22 @@ POPUP_END_TEXT = {
 
 POP_UP_LOCATION = "The Naked Room, Київ, вул. Рейтарська, 21"
 
+POP_UP_REMINDER = {
+"5days": f"""\
+Привіт! Нагадую про наш перший Reasonance Pop-Up 
+Дата: [date]
+Адреса: {POP_UP_LOCATION} 
+Дуже чекаю на зустріч з тобою!""",
+
+"3days": f"""\
+Вже зовсім скоро Reasonance Pop-Up 
+Дата: [date]
+Адреса: {POP_UP_LOCATION}
+Побачимось!""",
+
+"1day": f"""\
+Вже зовсім скоро Reasonance Pop-Up 
+Дата: [date]
+Адреса: {POP_UP_LOCATION}
+Побачимось!"""
+}

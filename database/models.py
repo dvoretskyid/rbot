@@ -24,6 +24,7 @@ class PopUp(Base):
     email: Mapped[str] = mapped_column(String(100), nullable=False)
     date: Mapped[str] = mapped_column(String(50), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    last_reminder_sent: Mapped[datetime] = mapped_column(DateTime, nullable=True, default=None)
 
     def __repr__(self):
         return f"<PopUp(id={self.id}, name={self.name}, telegram_id={self.telegram_id})>"

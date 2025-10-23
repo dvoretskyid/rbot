@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -93,12 +94,22 @@ async def send_notification(message: Message, state: FSMContext):
     except Exception as e:
         pass
 
-    notify_msg = "🆕 Нова реєстрація на поп-ап 🆕\n"\
-        f"Ім'я: {data['name']}\n"\
-        f"Телефон: {data['phone']}\n"\
-        f"Email: {data['email']}\n"\
-        f"Дата відвідування: {data['date']}\n"\
-        f"Telegram: @{message.from_user.username}\n"
+    current_date = datetime.now().strftime("%d.%m.%Y")
+
+    contact = f"{message.from_user.first_name}"
+    if message.from_user.last_name:
+        contact += f" {message.from_user.last_name}"
+    if message.from_user.username:
+        contact += f" / @{message.from_user.username}"
+
+    notify_msg = f"🆕 Реєстрація на Pop-Up 🆕\n"\
+        f"🗓Дата:  {current_date}\n"\
+        f"🔹Контакт:  {contact}\n"\
+        f"🔹Ім'я та прізвище: {data['name']}\n"\
+        f"🔹Номер: {data['phone']}\n"\
+        f"🔹Email: {data['email']}\n"\
+        f"🔹Дата заходу: {data['date']}"
+
     await message.bot.send_message(text=notify_msg, chat_id=GROUP_ID, message_thread_id=POPUP_TOPIC_ID)
 
 

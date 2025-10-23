@@ -1,4 +1,5 @@
-from aiogram import Bot, Router, F
+from datetime import datetime
+from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext 
@@ -12,9 +13,10 @@ router = Router()
 @router.message(CommandStart())
 async def start_command(message: Message, state: FSMContext):
     await message.answer(text=WELCOME_TEXT)
+    current_date = datetime.now().strftime('%d.%m.%Y')
     notify_msg = "🆕 Новий користувач бота 🆕\n"\
-        f"Імʼя: {message.from_user.full_name}\n"\
-        f"Telegram: @{message.from_user.username}\n"
+        f"🗓Дата:  {current_date}\n"\
+        f"🔹Контакт: {message.from_user.full_name} / @{message.from_user.username}\n"
     await message.bot.send_message(text=notify_msg, chat_id=GROUP_ID, message_thread_id=USER_TOPIC_ID)
     await show_menu(message, state)
 

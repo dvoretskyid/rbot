@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram.types import Message
 from sqlalchemy import select
 from database.models import AsyncSessionLocal, PopUp
@@ -75,3 +76,25 @@ async def get_popup_by_id(popup_id: int):
             select(PopUp).where(PopUp.id == popup_id)
         )
         return result.scalar_one_or_none()
+
+
+async def update_popup_last_reminder(popup_id: int):
+    """
+    Оновлює час останнього відправленого нагадування
+
+    Args:
+        popup_id: ID запису в базі
+    """
+    async with AsyncSessionLocal() as session:
+        try:
+            result = await session.execute(
+                select(PopUp).where(PopUp.id == popup_id)
+            )
+            popup = result.scalar_one_or_none()
+
+            if popup:
+                popup.last_reminder_sent = datetime.now()
+                await session.commit()
+        except Exception as e:
+            await session.rollback()
+            raise e
