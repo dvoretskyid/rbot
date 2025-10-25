@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from utils.states import PopUpForm
 from keyboards.inline import confirm_cancel_keyboard
 
-REMAINDER_DELAY = 10  # seconds
+REMAINDER_DELAY = 300  # seconds
 REMAINDER_TEXT = "Я все ще тут. Бажаєш продовжити дії в боті?"
 
 reminders: dict[StorageKey, asyncio.Task] = {}

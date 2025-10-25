@@ -6,7 +6,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 from configs.bot import BOT_TOKEN, BASE_URL, HOST, PORT
-from routers import start, popup, support, remainder
+from routers import start, popup, support, remainder, order
 from database.models import init_db
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -17,18 +17,25 @@ async def set_commands() -> None:
     commands = [
         BotCommand(command="menu", description="Головне меню"),
         BotCommand(command="popup", description="Реєстрація на POP-UP"),
-        # BotCommand(command="order", description="Продукт"),
-        # BotCommand(command="news", description="Новини та події"),
         BotCommand(command="help", description="Підтримка"),
     ]
-    await bot.set_my_commands(commands=commands, scope=BotCommandScopeDefault())
+    try:
+        await bot.set_my_commands(commands=commands, scope=BotCommandScopeDefault())
+        logging.info("Команди бота успішно встановлені")
+    except Exception as e:
+        logging.error(f"Помилка при встановленні команд: {e}")
 
 
 async def on_startup() -> None:
+    logging.info("Запуск бота...")
     await init_db()  # Ініціалізуємо базу даних
+    logging.info("База даних ініціалізована")
     await set_commands()
-    await bot.set_webhook(f"{BASE_URL}/{BOT_TOKEN}")
+    webhook_url = f"{BASE_URL}/{BOT_TOKEN}"
+    await bot.set_webhook(webhook_url)
+    logging.info(f"Webhook встановлено: {webhook_url}")
     await remainder.start_scheduler(bot)  # Запускаємо scheduler нагадувань
+    logging.info("Scheduler запущено")
 
 
 async def on_shutdown() -> None:
@@ -41,6 +48,7 @@ def main() -> None:
     dp.include_router(start.router)
     dp.include_router(popup.router)
     dp.include_router(support.router)
+    dp.include_router(order.router)
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
     app = web.Application()
