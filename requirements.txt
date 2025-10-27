@@ -1,7 +1,4 @@
 aiogram
 SQLAlchemy
-aiosqlite
+asyncpg
 python-dotenv
-qrcode
-pillow
-apscheduler

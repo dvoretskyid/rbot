@@ -10,7 +10,7 @@ async def save_popup_registration(message: Message, data: dict):
 
     Args:
         message: Message об'єкт з Telegram
-        data: Словник з даними форми (name, phone, email, date)
+        data: Словник з даними форми (name, phone, email)
     """
     async with AsyncSessionLocal() as session:
         try:
@@ -21,8 +21,7 @@ async def save_popup_registration(message: Message, data: dict):
                 last_name=message.from_user.last_name,
                 name=data.get("name"),
                 phone=data.get("phone"),
-                email=data.get("email"),
-                date=data.get("date")
+                email=data.get("email")
             )
             session.add(popup_entry)
             await session.commit()
@@ -78,23 +77,3 @@ async def get_popup_by_id(popup_id: int):
         return result.scalar_one_or_none()
 
 
-async def update_popup_last_reminder(popup_id: int):
-    """
-    Оновлює час останнього відправленого нагадування
-
-    Args:
-        popup_id: ID запису в базі
-    """
-    async with AsyncSessionLocal() as session:
-        try:
-            result = await session.execute(
-                select(PopUp).where(PopUp.id == popup_id)
-            )
-            popup = result.scalar_one_or_none()
-
-            if popup:
-                popup.last_reminder_sent = datetime.now()
-                await session.commit()
-        except Exception as e:
-            await session.rollback()
-            raise e

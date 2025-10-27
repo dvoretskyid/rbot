@@ -4,4 +4,3 @@ class PopUpForm(StatesGroup):
     name = State()
     phone = State()
     email = State()
-    date = State()

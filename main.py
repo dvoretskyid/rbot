@@ -6,7 +6,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 from configs.bot import BOT_TOKEN, BASE_URL, HOST, PORT
-from routers import start, popup, support, remainder, order
+from routers import start, popup, support, order
 from database.models import init_db
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -34,12 +34,9 @@ async def on_startup() -> None:
     webhook_url = f"{BASE_URL}/{BOT_TOKEN}"
     await bot.set_webhook(webhook_url)
     logging.info(f"Webhook встановлено: {webhook_url}")
-    await remainder.start_scheduler(bot)  # Запускаємо scheduler нагадувань
-    logging.info("Scheduler запущено")
 
 
 async def on_shutdown() -> None:
-    await remainder.stop_scheduler()  # Зупиняємо scheduler нагадувань
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.session.close()
 
