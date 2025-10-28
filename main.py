@@ -1,16 +1,15 @@
+import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, BotCommandScopeDefault
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
-from aiohttp import web
-from configs.bot import BOT_TOKEN, BASE_URL, HOST, PORT
+from configs.bot import BOT_TOKEN
 from routers import start, popup, support, order
 from database.models import init_db
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-dp = Dispatcher(bot=bot)
+dp = Dispatcher()
 
 
 async def set_commands() -> None:
@@ -28,34 +27,42 @@ async def set_commands() -> None:
 
 async def on_startup() -> None:
     logging.info("Запуск бота...")
-    await init_db()  # Ініціалізуємо базу даних
+    await init_db()
     logging.info("База даних ініціалізована")
     await set_commands()
-    webhook_url = f"{BASE_URL}/{BOT_TOKEN}"
-    await bot.set_webhook(webhook_url)
-    logging.info(f"Webhook встановлено: {webhook_url}")
+    # Видаляємо webhook якщо він був встановлений
+    await bot.delete_webhook(drop_pending_updates=True)
+    logging.info("Бот запущено в режимі polling")
 
 
 async def on_shutdown() -> None:
-    await bot.delete_webhook(drop_pending_updates=True)
+    logging.info("Вимикання бота...")
     await bot.session.close()
 
 
-def main() -> None:
+async def main() -> None:
+    # Підключаємо роутери
     dp.include_router(start.router)
     dp.include_router(popup.router)
     dp.include_router(support.router)
     dp.include_router(order.router)
+
+    # Реєструємо startup та shutdown
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
-    app = web.Application()
-    webhook_handler = SimpleRequestHandler(dispatcher=dp, bot=bot)
-    webhook_handler.register(app, path=f"/{BOT_TOKEN}")
-    setup_application(app, dp, bot=bot)
-    web.run_app(app, host=HOST, port=PORT)
+
+    # Запускаємо polling
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
     logger = logging.getLogger(__name__)
-    main()
+
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logging.info("Бот зупинено користувачем")
