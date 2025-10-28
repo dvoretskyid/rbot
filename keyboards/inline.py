@@ -24,7 +24,7 @@ def build_popup_final_keyboard() -> InlineKeyboardMarkup:
         InlineKeyboardMarkup з двома кнопками
     """
     # Пряме посилання на повторювану подію в Google Calendar (31.10-02.11)
-    calendar_url = "https://calendar.app.google/p71JV4RvwiuSD7Qb7"
+    calendar_url = "https://calendar.app.google/1BN2NgxouqWiH6VYA"
 
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Додати в календар", url=calendar_url),
