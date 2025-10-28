@@ -115,7 +115,8 @@ async def final(message: Message, state: FSMContext):
         from aiogram.types import FSInputFile
         photo = FSInputFile(POPUP_END_TEXT['img'])
         keyboard = build_popup_final_keyboard()
-        await message.answer_photo(photo, caption=POPUP_END_TEXT['caption'], reply_markup=keyboard)
+        await message.answer_photo(photo, caption=POPUP_END_TEXT['caption'])
+        await message.answer(text=POPUP_END_TEXT['final'], reply_markup=keyboard)
     except Exception as e:
         # Якщо картинка не знайдена, відправляємо тільки текст
         keyboard = build_popup_final_keyboard()
