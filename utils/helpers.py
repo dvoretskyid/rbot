@@ -1,9 +1,6 @@
-import io
 import re
 import asyncio
-import qrcode
-from qrcode.image.pil import PilImage
-from aiogram.types import Message, BufferedInputFile
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from utils.reminders import arm_reminder
 
@@ -50,12 +47,3 @@ FIELD_PATTERNS = {
 def validate(field: str, value: str) -> bool:
     pattern = FIELD_PATTERNS.get(field)
     return bool(pattern and pattern.fullmatch(value.strip()))
-
-
-def make_qrcode(data: str) -> BufferedInputFile:
-    img = qrcode.make(data, image_factory=PilImage)
-    buffer = io.BytesIO()
-    img.save(buffer, format="PNG")
-    return BufferedInputFile(buffer.getvalue(), filename="popup-ticket.png")
-
-

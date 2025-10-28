@@ -1,3 +1,6 @@
 .env
 .venv
 __pycache__
+/package
+.claude
+reasonance-key.pem

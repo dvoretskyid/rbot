@@ -3,7 +3,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from configs.popup import POPUP_TEXT, ASK_NAME, ASK_PHONE, ASK_EMAIL, POPUP_END_TEXT, POP_UP_LOCATION, POP_UP_DATE
+from configs.popup import POPUP_START_TEXT, POPUP_START_GIF, ASK_NAME, ASK_PHONE, ASK_EMAIL, POPUP_END_TEXT, POP_UP_LOCATION, POP_UP_DATE
 from configs.bot import GROUP_ID, POPUP_TOPIC_ID
 from keyboards.reply import hide_menu, send_phone_keyboard
 from keyboards.inline import build_popup_final_keyboard
@@ -34,7 +34,16 @@ async def start(message: Message, state: FSMContext):
         )
         await final(message, state)
         return
-    await message.answer(text=POPUP_TEXT)
+
+    # Відправляємо відео (GIF) з текстом
+    try:
+        from aiogram.types import FSInputFile
+        video = FSInputFile(POPUP_START_GIF)
+        await message.answer_video(video, caption=POPUP_START_TEXT)
+    except Exception as e:
+        # Якщо відео не знайдено, відправляємо тільки текст
+        await message.answer(text=POPUP_START_TEXT)
+
     await ask_question(message, state, ASK_NAME["valid"])
     await state.set_state(PopUpForm.name)
 
