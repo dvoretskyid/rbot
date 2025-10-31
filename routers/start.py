@@ -2,22 +2,36 @@ from datetime import datetime
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.context import FSMContext 
+from aiogram.fsm.context import FSMContext
 from configs.start import WELCOME_TEXT, MENU_TEXT
 from configs.bot import GROUP_ID, USER_TOPIC_ID
 from utils.helpers import delete_messages
 from keyboards.reply import menu
+from database.requests import register_user
 
 
 router = Router()
 @router.message(CommandStart())
 async def start_command(message: Message, state: FSMContext):
+    # Реєструємо користувача в базі даних
+    try:
+        user = await register_user(message)
+        is_new_user = user.created_at == user.updated_at or \
+                      (user.updated_at - user.created_at).total_seconds() < 2
+    except Exception as e:
+        print(f"Error registering user: {e}")
+        is_new_user = False
+
     await message.answer(text=WELCOME_TEXT)
-    current_date = datetime.now().strftime('%d.%m.%Y')
-    notify_msg = "🆕 Новий користувач бота 🆕\n"\
-        f"🗓Дата:  {current_date}\n"\
-        f"🔹Контакт: {message.from_user.full_name} / @{message.from_user.username}\n"
-    await message.bot.send_message(text=notify_msg, chat_id=GROUP_ID, message_thread_id=USER_TOPIC_ID)
+
+    # Відправляємо повідомлення в групу тільки для нових користувачів
+    if is_new_user:
+        current_date = datetime.now().strftime('%d.%m.%Y')
+        notify_msg = "🆕 Новий користувач бота 🆕\n"\
+            f"🗓Дата:  {current_date}\n"\
+            f"🔹Контакт: {message.from_user.full_name} / @{message.from_user.username}\n"
+        await message.bot.send_message(text=notify_msg, chat_id=GROUP_ID, message_thread_id=USER_TOPIC_ID)
+
     await show_menu(message, state)
 
 
