@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 menu = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text="POP-UP"), KeyboardButton(text="Підтримка")],
+    [KeyboardButton(text="Зробити замовлення"), KeyboardButton(text="Підтримка")],
 ], resize_keyboard=True)
 
 hide_menu = ReplyKeyboardRemove()
