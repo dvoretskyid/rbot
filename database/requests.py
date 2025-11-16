@@ -2,6 +2,7 @@ from datetime import datetime
 from aiogram.types import Message
 from sqlalchemy import select
 from database.models import AsyncSessionLocal, PopUp, User
+from configs.popup import POP_UP_EVENT_ID
 
 
 async def save_popup_registration(message: Message, data: dict):
@@ -15,6 +16,7 @@ async def save_popup_registration(message: Message, data: dict):
     async with AsyncSessionLocal() as session:
         try:
             popup_entry = PopUp(
+                event_id=POP_UP_EVENT_ID,
                 telegram_id=message.from_user.id,
                 username=message.from_user.username,
                 first_name=message.from_user.first_name,
@@ -161,5 +163,4 @@ async def get_user_count():
         result = await session.execute(select(User))
         users = result.scalars().all()
         return len(users)
-
 

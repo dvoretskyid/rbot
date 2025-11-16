@@ -44,6 +44,7 @@ class PopUp(Base):
     __tablename__ = "popup"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    event_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     username: Mapped[str] = mapped_column(String(100), nullable=True)
     first_name: Mapped[str] = mapped_column(String(100), nullable=True)
@@ -54,7 +55,7 @@ class PopUp(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
     def __repr__(self):
-        return f"<PopUp(id={self.id}, name={self.name}, telegram_id={self.telegram_id})>"
+        return f"<PopUp(id={self.id}, name={self.name}, telegram_id={self.telegram_id}, event_id={self.event_id})>"
 
 
 async def init_db():
