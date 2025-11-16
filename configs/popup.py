@@ -51,7 +51,7 @@ POP_UP_TIME = "16:00 - 20:00"
 POP_UP_LOCATION = "CUT 24/25 (вул. Саксаганського, 24/25)"
 
 POPUP_END_TEXT = {
-    "img": "imgs/reply_img2.JPG",
+    "img": "imgs/reply_img2.png",
     "caption": f"⋰{POP_UP_DATE}\n"\
                 f"⋰{POP_UP_TIME}\n"\
                 f"⋰{POP_UP_LOCATION}\n\n"\

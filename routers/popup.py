@@ -3,7 +3,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from configs.popup import POPUP_START_TEXT, POPUP_START_GIF, ASK_NAME, ASK_PHONE, ASK_EMAIL, POPUP_END_TEXT, POP_UP_LOCATION, POP_UP_DATE
+from configs.popup import POPUP_START_TEXT, POPUP_START_GIF, ASK_NAME, ASK_PHONE, ASK_EMAIL, POPUP_END_TEXT, POP_UP_LOCATION, POP_UP_DATE, POP_UP_EVENT_ID
 from configs.bot import GROUP_ID, POPUP_TOPIC_ID
 from keyboards.reply import hide_menu, send_phone_keyboard
 from keyboards.inline import build_popup_final_keyboard
@@ -25,8 +25,8 @@ async def popup_confirm_callback(query, state: FSMContext):
 @router.message(F.text == "POP-UP")
 async def start(message: Message, state: FSMContext):
     await delete_messages(message, state, "menu_message_id", "reminder_message_id")
-    # existing_registrations = await get_popup_by_telegram_id(message.from_user.id)
-    existing_registrations = False
+    existing_registrations = await get_popup_by_telegram_id(message.from_user.id, POP_UP_EVENT_ID)
+    # existing_registrations = False
     if existing_registrations:
         registration = existing_registrations[0]
         await state.update_data(

@@ -19,17 +19,13 @@ support_menu = InlineKeyboardMarkup(inline_keyboard=[
 
 def build_popup_final_keyboard() -> InlineKeyboardMarkup:
     """
-    Створює клавіатуру для фінального повідомлення з кнопками додавання в календар та повернення в меню.
+    Створює клавіатуру для фінального повідомлення з кнопкою повернення в меню.
 
     Returns:
-        InlineKeyboardMarkup з двома кнопками
+        InlineKeyboardMarkup з однією кнопкою
     """
-    # Пряме посилання на повторювану подію в Google Calendar (31.10-02.11)
-    calendar_url = "https://calendar.app.google/1BN2NgxouqWiH6VYA"
-
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Додати в календар", url=calendar_url),
-        InlineKeyboardButton(text="До меню", callback_data="to_menu")]
+        [InlineKeyboardButton(text="До меню", callback_data="to_menu")]
     ])
 
 

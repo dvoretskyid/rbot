@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from aiogram.types import Message
 from sqlalchemy import select
 from database.models import AsyncSessionLocal, PopUp, User
@@ -33,20 +34,23 @@ async def save_popup_registration(message: Message, data: dict):
             raise e
 
 
-async def get_popup_by_telegram_id(telegram_id: int):
+async def get_popup_by_telegram_id(telegram_id: int, event_id: Optional[int] = None):
     """
     Отримує всі реєстрації користувача за telegram_id
 
     Args:
         telegram_id: ID користувача в Telegram
+        event_id: ID події (опційно для фільтрування)
 
     Returns:
         Список об'єктів PopUp
     """
     async with AsyncSessionLocal() as session:
-        result = await session.execute(
-            select(PopUp).where(PopUp.telegram_id == telegram_id)
-        )
+        query = select(PopUp).where(PopUp.telegram_id == telegram_id)
+        if event_id is not None:
+            query = query.where(PopUp.event_id == event_id)
+
+        result = await session.execute(query)
         return result.scalars().all()
 
 
@@ -163,4 +167,3 @@ async def get_user_count():
         result = await session.execute(select(User))
         users = result.scalars().all()
         return len(users)
-
