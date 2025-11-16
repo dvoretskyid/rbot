@@ -21,8 +21,8 @@ async def popup_confirm_callback(query, state: FSMContext):
 
 
 # Команда та кнопка POP-UP приховані
-# @router.message(Command("popup"))
-# @router.message(F.text == "POP-UP")
+@router.message(Command("popup"))
+@router.message(F.text == "POP-UP")
 async def start(message: Message, state: FSMContext):
     await delete_messages(message, state, "menu_message_id", "reminder_message_id")
     # existing_registrations = await get_popup_by_telegram_id(message.from_user.id)
